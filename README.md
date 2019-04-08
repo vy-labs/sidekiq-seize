@@ -6,7 +6,7 @@ Sidekiq middleware that allows capturing exceptions and throwing only on after l
 
 gem 'sidekiq-seize'
 
-Worker example:
+### Worker example
 ``` ruby
   class MyWorker
     include Sidekiq::Worker
