@@ -1,9 +1,9 @@
 require 'sidekiq'
 require 'sidekiq/processor'
-require 'byebug'
 
 RSpec.describe Sidekiq::Middleware::Server::Seize do
   TEST_EXCEPTION = ArgumentError
+  MAX_RETRY = 2
 
   def build_job_hash(worker_class, args=[])
     {'class' => worker_class, 'args' => args}
@@ -70,16 +70,12 @@ RSpec.describe Sidekiq::Middleware::Server::Seize do
       expect {
         process_job(retry_job.item)
       }.to raise_error(TEST_EXCEPTION, 'Oops')
-      expect(Sidekiq::RetrySet.new.size).to eq(1)
-      retry_job = fetch_retry_job
-      expect(retry_job['retry_count']).to eq(2)
-      expect(retry_job['error_class']).to eq('ArgumentError')
-      expect(retry_job['error_message']).to eq('Oops')
+      expect(Sidekiq::RetrySet.new.size).to eq(0)
     end
   end
 
   shared_examples_for 'it should raise 1 errors' do
-    it 'raises the original error' do
+    it 'raises the original error at the end' do
       args ||= []
       expect {
         process_job(build_job_hash(worker_class, args))
@@ -88,24 +84,27 @@ RSpec.describe Sidekiq::Middleware::Server::Seize do
       retry_job = fetch_retry_job
       expect(retry_job['retry_count']).to eq(0)
 
-      args ||= []
       expect {
-        process_job(build_job_hash(worker_class, args))
+        process_job(retry_job.item)
       }.to_not raise_error(TEST_EXCEPTION)
       expect(Sidekiq::RetrySet.new.size).to eq(1)
       retry_job = fetch_retry_job
-      expect(retry_job['retry_count']).to eq(0)
+      expect(retry_job['retry_count']).to eq(1)
 
+      expect {
+        process_job(retry_job.item)
+      }.to raise_error(TEST_EXCEPTION, 'Oops')
+      expect(Sidekiq::RetrySet.new.size).to eq(0)
+    end
+  end
 
+  shared_examples_for 'retry disabled, it should raise one error' do
+    it 'raises the error' do
       args ||= []
       expect {
         process_job(build_job_hash(worker_class, args))
       }.to raise_error(TEST_EXCEPTION, 'Oops')
-      expect(Sidekiq::RetrySet.new.size).to eq(1)
-      retry_job = fetch_retry_job
-      expect(retry_job['retry_count']).to eq(0)
-      expect(retry_job['error_class']).to eq('ArgumentError')
-      expect(retry_job['error_message']).to eq('Oops')
+      expect(Sidekiq::RetrySet.new.size).to eq(0)
     end
   end
 
@@ -119,20 +118,44 @@ RSpec.describe Sidekiq::Middleware::Server::Seize do
     end
 
     describe 'with nothing explicitly enabled' do
+      it_behaves_like 'retry disabled, it should raise one error' do
+        let!(:worker_class) { initialize_worker_class(retry: false) }
+      end
+
+      it_behaves_like 'retry disabled, it should raise one error' do
+        let!(:worker_class) { initialize_worker_class(retry: 0) }
+      end
+
+      it_behaves_like 'retry disabled, it should raise one error' do
+        let!(:worker_class) { initialize_worker_class(seize: true, retry: false) }
+      end
+
+      it_behaves_like 'retry disabled, it should raise one error' do
+        let!(:worker_class) { initialize_worker_class(seize: true, retry: 0) }
+      end
+
+      it_behaves_like 'retry disabled, it should raise one error' do
+        let!(:worker_class) { initialize_worker_class(seize: false, retry: 0) }
+      end
+
+      it_behaves_like 'retry disabled, it should raise one error' do
+        let!(:worker_class) { initialize_worker_class(seize: false, retry: false) }
+      end
+
       it_behaves_like 'it should raise multiple errors' do
-        let!(:worker_class) { initialize_worker_class }
+        let!(:worker_class) { initialize_worker_class(retry: MAX_RETRY) }
       end
     end
 
     describe 'with seize explicitly disabled' do
       it_behaves_like 'it should raise multiple errors' do
-        let!(:worker_class) { initialize_worker_class(seize: false) }
+        let!(:worker_class) { initialize_worker_class(seize: false, retry: MAX_RETRY) }
       end
     end
 
-    describe 'with seize explicitly enabled and retry is false' do
+    describe 'with seize explicitly enabled' do
       it_behaves_like 'it should raise 1 errors' do
-        let!(:worker_class) { initialize_worker_class(seize: true) }
+        let!(:worker_class) { initialize_worker_class(seize: true, retry: MAX_RETRY) }
       end
     end
   end
