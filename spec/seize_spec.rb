@@ -126,14 +126,12 @@ RSpec.describe Sidekiq::Middleware::Server::Seize do
         let!(:worker_class) { initialize_worker_class(retry: 0) }
       end
 
-      it_behaves_like 'retry disabled, it should raise one error' do
-        let!(:worker_class) { initialize_worker_class(seize: true, retry: false) }
+      it_behaves_like 'it should raise multiple errors' do
+        let!(:worker_class) { initialize_worker_class(retry: MAX_RETRY) }
       end
+    end
 
-      it_behaves_like 'retry disabled, it should raise one error' do
-        let!(:worker_class) { initialize_worker_class(seize: true, retry: 0) }
-      end
-
+    describe 'with seize explicitly disabled' do
       it_behaves_like 'retry disabled, it should raise one error' do
         let!(:worker_class) { initialize_worker_class(seize: false, retry: 0) }
       end
@@ -143,12 +141,6 @@ RSpec.describe Sidekiq::Middleware::Server::Seize do
       end
 
       it_behaves_like 'it should raise multiple errors' do
-        let!(:worker_class) { initialize_worker_class(retry: MAX_RETRY) }
-      end
-    end
-
-    describe 'with seize explicitly disabled' do
-      it_behaves_like 'it should raise multiple errors' do
         let!(:worker_class) { initialize_worker_class(seize: false, retry: MAX_RETRY) }
       end
     end
@@ -156,6 +148,14 @@ RSpec.describe Sidekiq::Middleware::Server::Seize do
     describe 'with seize explicitly enabled' do
       it_behaves_like 'it should raise 1 errors' do
         let!(:worker_class) { initialize_worker_class(seize: true, retry: MAX_RETRY) }
+      end
+
+      it_behaves_like 'retry disabled, it should raise one error' do
+        let!(:worker_class) { initialize_worker_class(seize: true, retry: false) }
+      end
+
+      it_behaves_like 'retry disabled, it should raise one error' do
+        let!(:worker_class) { initialize_worker_class(seize: true, retry: 0) }
       end
     end
   end
