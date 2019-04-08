@@ -7,7 +7,6 @@ module Sidekiq
   module Middleware
     module Server
       class Seize < ::Sidekiq::JobRetry
-        include Sidekiq::Util
 
         def call(worker, job, queue)
           yield
