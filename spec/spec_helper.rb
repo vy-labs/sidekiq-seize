@@ -1,4 +1,4 @@
-require 'seize'
+require 'sidekiq-seize'
 
 $TESTING = true
 
