@@ -2,7 +2,6 @@ require 'sidekiq'
 require 'sidekiq/util'
 require 'sidekiq/api'
 require 'sidekiq/job_retry'
-require 'byebug'
 
 module Sidekiq
   module Middleware
