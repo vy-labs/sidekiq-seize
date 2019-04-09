@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |gem|
-  gem.name                  = 'seize'
+  gem.name                  = 'sidekiq-seize'
   gem.version               = '1.0.0'
   gem.authors               = ['Rajat Goyal']
   gem.email                 = ['rajat@synaptic.com']
