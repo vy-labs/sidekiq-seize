@@ -2,6 +2,7 @@ require 'sidekiq'
 require 'sidekiq/util'
 require 'sidekiq/api'
 require 'sidekiq/job_retry'
+require 'byebug'
 
 module Sidekiq
   module Middleware
@@ -39,11 +40,12 @@ module Sidekiq
         end
 
         def seize_class?(options, e)
-          return true if options['seize_exception_classes'].nil?
+          return true if options['seize_exceptions_classes'].nil?
 
-          options['seize_exceptions_classes'].any? do |c|
-            return true if c === e.class
+          options['seize_exceptions_classes'].each do |klass|
+            return true if klass == e.class
           end
+
           false
         end
 

@@ -157,6 +157,14 @@ RSpec.describe Sidekiq::Middleware::Server::Seize do
       it_behaves_like 'retry disabled, it should raise one error' do
         let!(:worker_class) { initialize_worker_class(seize: true, retry: 0) }
       end
+
+      it_behaves_like 'it should raise 1 errors' do
+        let!(:worker_class) { initialize_worker_class(seize: true, retry: MAX_RETRY, seize_exceptions_classes: [TEST_EXCEPTION]) }
+      end
+
+      it_behaves_like 'it should raise multiple errors' do
+        let!(:worker_class) { initialize_worker_class(seize: true, retry: MAX_RETRY, seize_exceptions_classes: [NoMemoryError]) }
+      end
     end
   end
 end
