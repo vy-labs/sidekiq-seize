@@ -1,4 +1,4 @@
-# seize
+# sidekiq-seize
 
 Sidekiq middleware that allows capturing exceptions and throwing only after last retry, useful for integrations with sentry and airbrake when you don't want to raise exceptions on each retry.
 
