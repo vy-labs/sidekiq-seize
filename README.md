@@ -4,7 +4,7 @@ Sidekiq middleware that allows capturing exceptions and throwing only after last
 
 #### Installation
 
-```gem 'sidekiq-seize'```
+```gem 'sidekiq-seize', git: 'git@github.com:vy-labs/sidekiq-seize.git', tag: 'v0.3.0'```
 
 ### Worker example
 
