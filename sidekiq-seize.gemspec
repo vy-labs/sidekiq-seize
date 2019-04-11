@@ -16,4 +16,5 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency             'sidekiq', '>= 5.0.0'
   gem.add_development_dependency 'rspec', '>= 3.6.0'
+  gem.add_development_dependency 'byebug'
 end
