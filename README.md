@@ -7,10 +7,25 @@ Sidekiq middleware that allows capturing exceptions and throwing only after last
 ```gem 'sidekiq-seize'```
 
 ### Worker example
+
 ``` ruby
   class MyWorker
     include Sidekiq::Worker
     sidekiq_options seize: true
+
+    def perform(params)
+      ...
+    end
+  end
+```
+
+
+Seize only when certain types of exceptions occur
+
+``` ruby
+  class MyWorker
+    include Sidekiq::Worker
+    sidekiq_options seize: true, seize_exceptions_classes: [ActiveRecord::Deadlocked]
 
     def perform(params)
       ...
