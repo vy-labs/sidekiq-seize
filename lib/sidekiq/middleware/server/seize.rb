@@ -10,7 +10,7 @@ module Sidekiq
 
         def call(worker, job, queue)
           yield
-        rescue Exception => e
+        rescue StandardError => e
           options = worker.sidekiq_options_hash || {}
           bubble_exception(options, job, e)
           attempt_retry(worker, job, queue, e)
