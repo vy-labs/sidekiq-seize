@@ -4,7 +4,8 @@ Sidekiq middleware that allows capturing exceptions and throwing only after last
 
 #### Installation
 
-$ gem install sidekiq-seize
+```$ gem install sidekiq-seize
+```
 
 ### Worker example
 
