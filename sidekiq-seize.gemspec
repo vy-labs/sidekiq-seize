@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.authors               = ['Rajat Goyal']
   gem.email                 = ['rajat@synaptic.com']
   gem.summary               = 'Sidekiq middleware to silent errors and send only on dead'
-  gem.description           = 'idekiq middleware to silent errors and send only on dead '
+  gem.description           = 'Sidekiq middleware that allows capturing exceptions and throwing only after last retry, when the job goes to dead queue.'
   gem.license               = 'MIT'
   gem.executables           = []
   gem.files                 = `git ls-files`.split("\n")
@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.require_paths         = ['lib']
   gem.required_ruby_version = '>= 2.2.2'
 
-  gem.add_dependency             'sidekiq', '>= 5.0.0'
-  gem.add_development_dependency 'rspec', '>= 3.6.0'
+  gem.add_runtime_dependency 'sidekiq', '~> 5.0', '>= 5.0.0'
+  gem.add_development_dependency 'rspec', '~> 3.6', '>= 3.6.0'
   gem.add_development_dependency 'byebug'
 end
