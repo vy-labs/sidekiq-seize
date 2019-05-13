@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |gem|
   gem.name                  = 'sidekiq-seize'
-  gem.version               = '0.3.0'
+  gem.version               = '0.4.0'
   gem.authors               = ['Rajat Goyal']
   gem.email                 = ['rajat@synaptic.com']
   gem.summary               = 'Sidekiq middleware to silent errors and send only on dead'
