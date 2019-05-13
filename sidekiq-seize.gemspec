@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.authors               = ['Rajat Goyal']
   gem.email                 = ['rajat@synaptic.com']
   gem.summary               = 'Sidekiq middleware to silent errors and send only on dead'
-  gem.description           = 'Sidekiq middleware that allows capturing exceptions and throwing only after last retry, when the job goes to dead queue.'
+  gem.description           = 'Sidekiq middleware that allows capturing exceptions silently until the last retry.'
   gem.license               = 'MIT'
   gem.executables           = []
   gem.files                 = `git ls-files`.split("\n")
