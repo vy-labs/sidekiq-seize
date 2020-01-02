@@ -37,4 +37,7 @@ Seize only when certain types of exceptions occur
 
 #### Implementation Details
 
-This middleware inherits from sidekiq `JobRetry` middleware, all exceptions in each retry until the final retry are captured and job is manually put into retry. For the last retry exception is raised naturally. 
+This middleware inherits from sidekiq `JobRetry` middleware, all exceptions in each retry until the final retry are captured and job is manually put into retry. For the last retry exception is raised naturally.
+
+#### Caution: Do not use with sidekiq batch.
+It will result in trigger of on_success callback even when job went into retry.
